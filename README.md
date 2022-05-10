@@ -30,10 +30,15 @@ Before, whitespace used to break everything however, now its fixed!
 
 # IJP SYNTAX DIFFERENCES TO PYTHON
 `write("hello world")` --> `print("hello world")`
+
 !fun name(): --> def name():
+
 #!imp --> import
+
 #!fr --> from
+
 #/ijp python --> #/ijp python compiled
+
 !hell --> class
 
 So most important custom IJP features, start with "!NAME", this means ! is a very special character.
