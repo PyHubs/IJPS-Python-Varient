@@ -1,5 +1,6 @@
 #/ijp python
 
+# This is the source code, to be compiled to native python. Notice write, !fun, !hell
 write("hello world")
 
 # Functions are now !fun
