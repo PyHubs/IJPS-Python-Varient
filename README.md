@@ -42,7 +42,9 @@ Before, whitespace used to break everything however, now its fixed!
 `!hell` --> `class`
 
 So most important custom IJP features, start with "!NAME", this means ! is a very special character.
+
 DONT WRITE `!fun:`
+
 DONT WRITE `!hell:`
 
 As they will break the language.
