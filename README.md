@@ -50,6 +50,14 @@ DONT WRITE `!hell:`
 
 As they will break the language.
 
+# Known bugs
+DONT DO LIKE
+```python
+print("write")
+```
+
+since we are checking if write in and ) at the end. so please, until next bug fix, be aware!
+
 # Upcoming features
 ```
 #/ijp python
