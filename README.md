@@ -1,6 +1,7 @@
 # IJPS-Python-Varient V1
+A simple python varient with different features, which compiles into native python code
 
-Offical Release Version 1 and comes with bug fixes!
+**NOW: Offical Release Version 1 and comes with bug fixes for fun and hell!**
  
  
 > IJP CODE
