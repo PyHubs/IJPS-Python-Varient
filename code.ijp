@@ -1,0 +1,26 @@
+#/ijp python
+
+write("hello world")
+
+# Functions are now !fun
+!fun saygoodbye():
+    print('say goodbye')
+
+!fun inafun():
+    print('root of inafun')
+
+    !fun anotherfun():
+        print('in another inafun')
+        print("!fun")
+
+    anotherfun()
+
+!hell classes_suck():
+    !fun __init__(self, arg):
+        if arg == True:
+            print('Success')
+        else:
+            print('Fail')
+
+inafun()
+saygoodbye()
