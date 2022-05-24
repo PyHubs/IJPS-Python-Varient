@@ -33,10 +33,14 @@ imports = "from tkinter import *\nfrom tkinter import colorchooser\nfrom tkinter
 
 """
 DIFFERENCES
-write("hello world") --> print("hello world")
+!write("hello world") --> print("hello world")
 !fun name(): --> def name():
 #!imp --> import
 #!fr --> from
+#!write --> print
+
+#!super root title geometry color
+
 #/ijp python --> #/ijp python compiled
 class --> hell
 """
@@ -64,11 +68,21 @@ def parse(line):
     line_whitespace = line.lstrip()
 
     # print --> write
-    if line_whitespace.startswith("write(") == True:
+    if line_whitespace.startswith("!write(") == True:
         if line.endswith(")") == True:
 
-            line = line.replace(f"{line[0:5]}", "print", 1)
+            line = line.replace(f"!write", "print", 1)
         else: pass
+
+    # print(RED+TEXT+DEAFULT) --> write.red
+    elif line_whitespace.startswith("!write.red(") == True:
+        if line.endswith(")") == True:
+            line = line.replace(f"!write.red", "print", 1)
+        else: pass
+
+    # "#/ijp colortext" replace "from colorama import *"
+    elif line_whitespace.startswith("#/ijp colortext") == True:
+        line = line.replace("#/ijp colortext", "from colorama import *", 1)
 
     # def --> fun
     elif "!fun" in line_whitespace:
