@@ -33,6 +33,10 @@ code = open(filename, "r")
 codes = code.readlines()
 imports = "from tkinter import *\nfrom tkinter import colorchooser\nfrom tkinter import messagebox\nfrom tkinter import filedialog\nfrom tkinter import ttk"
 
+# Variables
+variables = []
+contents = []
+
 """
 DIFFERENCES
 !write("hello world") --> print("hello world")
@@ -63,6 +67,22 @@ class error:
         console.rule(f"[italic blue]{type} + Tips")
         console.print(f"[red bold]{error_line}")
         console.print('[italic blue]You can use [italic green]#/ijp python[italic blue] [italic red](or "py" or "python" based on what the python command is on your laptop)[italic blue] to help you fix this error.')
+        sys.exit()
+
+    def MissingArgument(type, content):
+        error_line = f"{type}: {content}"
+
+        console.rule(f"[italic blue]{type} + Tips")
+        console.print(f"[red bold]{error_line}")
+        console.print('[italic blue]Please define a [italic green]variable name and "=" and content[italic blue] [italic red]for example: var name = "Joe"')
+        sys.exit()
+
+    def tksuper(type, content):
+        error_line = f"{type}: {content}"
+
+        console.rule(f"[italic blue]{type} + Tips")
+        console.print(f"[red bold]{error_line}")
+        console.print('[italic green]Example: tksuper root title geometry color')
         sys.exit()
 
 # Check for space
@@ -115,29 +135,121 @@ def parse(line):
     elif line.startswith("fr ") == True:
         line = line.replace("fr", "from", 1)
 
+    # strings
+    elif line_whitespace.startswith("str") == True:
+        # Convert line into list
+        line_list = line.split(" ")
+
+        try:
+            # Check for type
+            types = line_list[0]
+            name = line_list[1]
+            identifier = line_list[2]
+            content = " ".join(line_list[3:])
+
+            print(types, name, identifier, content)
+            print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
+
+            prev = f"str {name} = {content}"
+            new = f"{name} {identifier} str({content})"
+            line = line.replace(prev, new, 1)
+        except Exception:
+            error.MissingArgument("Missing name, identifier, content", line)
+
+    # integers
+    elif line_whitespace.startswith("int") == True:
+        # Convert line into list
+        line_list = line.split(" ")
+
+        try:
+            # Check for type
+            types = line_list[0]
+            name = line_list[1]
+            identifier = line_list[2]
+            content = " ".join(line_list[3:])
+
+            print(types, name, identifier, content)
+            print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
+
+            prev = f"int {name} = {content}"
+            new = f"{name} {identifier} int({content})"
+            line = line.replace(prev, new, 1)
+        except Exception:
+            error.MissingArgument("Missing name, identifier, content", line)
+
+    # floats
+    elif line_whitespace.startswith("float") == True:
+        # Convert line into list
+        line_list = line.split(" ")
+
+        try:
+            # Check for type
+            types = line_list[0]
+            name = line_list[1]
+            identifier = line_list[2]
+            content = " ".join(line_list[3:])
+
+            print(types, name, identifier, content)
+            print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
+
+            prev = f"float {name} = {content}"
+            new = f"{name} {identifier} float({content})"
+            line = line.replace(prev, new, 1)
+        except Exception:
+            error.MissingArgument("Missing name, identifier, content", line)
+
+    # bool
+    elif line_whitespace.startswith("bool") == True:
+        # Convert line into list
+        line_list = line.split(" ")
+
+        try:
+            # Check for type
+            types = line_list[0]
+            name = line_list[1]
+            identifier = line_list[2]
+            content = " ".join(line_list[3:])
+
+            print(types, name, identifier, content)
+            print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
+
+            prev = f"bool {name} = {content}"
+            new = f"{name} {identifier} bool({content})"
+            line = line.replace(prev, new, 1)
+        except Exception:
+            error.MissingArgument("Missing name, identifier, content", line)
+
+    # Check if /$ is in line
+    elif line_whitespace.startswith("/$") == True: pass
+
+    # Check if f"${varname}" in line
+    elif f"$" in line:
+        # Loop through variables
+        for var in variables:
+            # Loop through content
+            for content in contents:
+                # Replace varname with content
+                line = line.replace(f"${var}", content, 1)
+
     #tksuper
     elif line.startswith("tksuper "):
         # Convert line to a list
         lists = line.split(" ")
+        
+        try:
+            # get root, title, size, color
+            var_root = lists[1]
+            var_title = lists[2]
+            var_size = lists[3]
+            var_color = lists[4]
 
-        # Get the root
-        var_root = lists[1]
-
-        # Get the title
-        var_title = lists[2]
-
-        # Get the size
-        var_size = lists[3]
-
-        # Get the color
-        var_color = lists[4]
-
-        line = f'''{var_root} = Tk()
+            line = f'''{var_root} = Tk()
 root.title({var_title})
 root.geometry({var_size})
 root.configure(bg={var_color})'''
-
-    else: pass
+        except Exception:
+            line_num = lists[0]
+            error.TkSuper("Rw, WindowTitle, WindowSize, and WindowColor missing", line)
 
     line = line.replace("#/ijp python", "#/ijp python compiled")
 
