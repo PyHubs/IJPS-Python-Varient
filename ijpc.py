@@ -3,15 +3,19 @@ import subprocess, sys
 from rich.console import Console
 from rich.syntax import Syntax
 
+# Python target to run from
+PYTHON_TARGET = sys.executable
+
 # Get arguments
 agrs = sys.argv
-print(agrs)
 
+# Try to find filename, compile_py
 try:
     filename = agrs[1]
     compile_py = agrs[2]
     print(filename, compile_py)
 
+# If not, show main screen
 except Exception:
     print("""usage: IJP [-h] ijp_file compilation_py
 
@@ -31,24 +35,20 @@ optional arguments:
 # Read code
 code = open(filename, "r")
 codes = code.readlines()
-imports = "from tkinter import *\nfrom tkinter import colorchooser\nfrom tkinter import messagebox\nfrom tkinter import filedialog\nfrom tkinter import ttk"
 
-# Variables
-variables = []
-contents = []
+# Define imports to compile to when you say import tkall
+imports = "from tkinter import *\nfrom tkinter import colorchooser\nfrom tkinter import messagebox\nfrom tkinter import filedialog\nfrom tkinter import ttk"
 
 """
 DIFFERENCES
-!write("hello world") --> print("hello world")
-!fun name(): --> def name():
-#!imp --> import
-#!fr --> from
-#!write --> print
-
-#!super root title geometry color
-
+write("hello world") --> print("hello world")
+fun name(): --> def name():
+imp --> import
+fr --> from
+write --> print
+tksuper root title geometry color
 #/ijp python --> #/ijp python compiled
-class --> hell
+OOP --> hell
 """
 
 lines = []
@@ -57,10 +57,12 @@ console = Console()
 # Errors
 class error:
     def __init__(self, type, line_num, content) -> None:
+        # Assign values
         self.type = type
         line_num = line_num
         self.content = content
 
+    # When initalizer contains python
     def invalidLangError(type, line_num, content):
         error_line = f"{type} on line {line_num}: {content}"
 
@@ -139,6 +141,7 @@ def parse(line):
     elif line_whitespace.startswith("str") == True:
         # Convert line into list
         line_list = line.split(" ")
+        line_list = [x for x in line_list if x != ""]
 
         try:
             # Check for type
@@ -147,8 +150,8 @@ def parse(line):
             identifier = line_list[2]
             content = " ".join(line_list[3:])
 
-            print(types, name, identifier, content)
-            print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
+            #print(types, name, identifier, content)
+            #print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
 
             prev = f"str {name} = {content}"
             new = f"{name} {identifier} str({content})"
@@ -160,6 +163,7 @@ def parse(line):
     elif line_whitespace.startswith("int") == True:
         # Convert line into list
         line_list = line.split(" ")
+        line_list = [x for x in line_list if x != ""]
 
         try:
             # Check for type
@@ -168,8 +172,8 @@ def parse(line):
             identifier = line_list[2]
             content = " ".join(line_list[3:])
 
-            print(types, name, identifier, content)
-            print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
+            #print(types, name, identifier, content)
+            #print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
 
             prev = f"int {name} = {content}"
             new = f"{name} {identifier} int({content})"
@@ -181,6 +185,7 @@ def parse(line):
     elif line_whitespace.startswith("float") == True:
         # Convert line into list
         line_list = line.split(" ")
+        line_list = [x for x in line_list if x != ""]
 
         try:
             # Check for type
@@ -189,8 +194,8 @@ def parse(line):
             identifier = line_list[2]
             content = " ".join(line_list[3:])
 
-            print(types, name, identifier, content)
-            print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
+            #print(types, name, identifier, content)
+            #print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
 
             prev = f"float {name} = {content}"
             new = f"{name} {identifier} float({content})"
@@ -202,6 +207,7 @@ def parse(line):
     elif line_whitespace.startswith("bool") == True:
         # Convert line into list
         line_list = line.split(" ")
+        line_list = [x for x in line_list if x != ""]
 
         try:
             # Check for type
@@ -210,29 +216,34 @@ def parse(line):
             identifier = line_list[2]
             content = " ".join(line_list[3:])
 
-            print(types, name, identifier, content)
-            print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
+            #print(types, name, identifier, content)
+            #print(f"Type:{types}\nName:{name}\nIdentifier:{identifier}\nContent:{content}")
 
-            prev = f"bool {name} = {content}"
+            prev = f"{types} {name} = {content}"
             new = f"{name} {identifier} bool({content})"
             line = line.replace(prev, new, 1)
         except Exception:
             error.MissingArgument("Missing name, identifier, content", line)
+    
+    # Check if line startswith init:
+    elif line_whitespace.startswith("init(") == True:
+        line = line.replace("init(", "def __init__(:", 1)
 
-    # Check if /$ is in line
-    elif line_whitespace.startswith("/$") == True: pass
+    # check if line starts with onexec:
+    elif line_whitespace.startswith("onexec:") == True:
+        # Remove onexec:
+        line = line.replace('onexec:', 'if __name__ == "__main__":', 1)
 
-    # Check if f"${varname}" in line
-    elif f"$" in line:
-        # Loop through variables
-        for var in variables:
-            # Loop through content
-            for content in contents:
-                # Replace varname with content
-                line = line.replace(f"${var}", content, 1)
+        # Check if line ends with :
+        if line.endswith(":") == True:
+            # Remove :
+            line = line.replace(":", "", 1)
+
+            # Add to onexec
+            onexec.append(line)
 
     #tksuper
-    elif line.startswith("tksuper "):
+    elif line_whitespace.startswith("tksuper "):
         # Convert line to a list
         lists = line.split(" ")
         
@@ -288,7 +299,7 @@ def output_code():
 
 # Run python compile.py
 def run_code():
-    subprocess.run(["python", compile_py])
+    subprocess.run([PYTHON_TARGET, compile_py])
 
 if __name__ == '__main__':
     # Check first line
